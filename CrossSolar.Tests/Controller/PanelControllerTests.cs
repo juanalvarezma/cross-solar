@@ -5,6 +5,8 @@ using CrossSolar.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
+using Microsoft.EntityFrameworkCore;
+using CrossSolar.Domain;
 
 namespace CrossSolar.Tests.Controller
 {
@@ -27,7 +29,8 @@ namespace CrossSolar.Tests.Controller
                 Brand = "Areva",
                 Latitude = 12.345678,
                 Longitude = 98.7655432,
-                Serial = "AAAA1111BBBB2222"
+                Serial = "AAAA1111BBBB2222",
+                Id= 0 
             };
 
             // Arrange
@@ -41,6 +44,19 @@ namespace CrossSolar.Tests.Controller
             var createdResult = result as CreatedResult;
             Assert.NotNull(createdResult);
             Assert.Equal(201, createdResult.StatusCode);
+        }
+
+        [Fact]
+        public void Get_RecordsPanelInserted()
+        {  
+            var optionsBuilder = new DbContextOptionsBuilder<CrossSolarDbContext>();
+            optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Database=CrossSolarDb;Trusted_Connection=True;");
+            
+            CrossSolarDbContext _context = new CrossSolarDbContext(optionsBuilder.Options); 
+            Repository.PanelRepository _pruebas = new Repository.PanelRepository(_context);
+
+            var _res = _pruebas.Query();
+            Assert.NotNull(_res);
         }
     }
 }

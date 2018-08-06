@@ -24,15 +24,18 @@ namespace CrossSolar.Controllers
         }
 
         // GET panel/XXXX1111YYYY2222/analytics
-        [HttpGet("{banelId}/[controller]")]
+        [HttpGet("{panelId}/[controller]")]
         public async Task<IActionResult> Get([FromRoute] string panelId)
         {
-            var panel = await _panelRepository.Query()
+            var panel = await _panelRepository
+                .Query()
                 .FirstOrDefaultAsync(x => x.Serial.Equals(panelId, StringComparison.CurrentCultureIgnoreCase));
 
-            if (panel == null) return NotFound();
+            if (panel == null)
+                return NotFound();
 
-            var analytics = await _analyticsRepository.Query()
+            var analytics = await _analyticsRepository
+                .Query()
                 .Where(x => x.PanelId.Equals(panelId, StringComparison.CurrentCultureIgnoreCase)).ToListAsync();
 
             var result = new OneHourElectricityListModel
@@ -43,6 +46,7 @@ namespace CrossSolar.Controllers
                     KiloWatt = c.KiloWatt,
                     DateTime = c.DateTime
                 })
+                .ToList()
             };
 
             return Ok(result);
@@ -61,7 +65,8 @@ namespace CrossSolar.Controllers
         [HttpPost("{panelId}/[controller]")]
         public async Task<IActionResult> Post([FromRoute] string panelId, [FromBody] OneHourElectricityModel value)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             var oneHourElectricityContent = new OneHourElectricity
             {

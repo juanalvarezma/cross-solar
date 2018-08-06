@@ -4,12 +4,15 @@ namespace CrossSolar.Domain
 {
     public class CrossSolarDbContext : DbContext
     {
+        public static DbContextOptions<CrossSolarDbContext> optionsInternal;
+
         public CrossSolarDbContext()
         {
         }
 
         public CrossSolarDbContext(DbContextOptions<CrossSolarDbContext> options) : base(options)
         {
+            optionsInternal = options;
         }
 
         public DbSet<Panel> Panels { get; set; }
